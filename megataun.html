@@ -1,0 +1,2530 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Megataun | Roblox Game Studio
+    </title>
+
+
+    <style>
+
+        /* =========================================
+           RESET
+        ========================================= */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+
+        body {
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            background: #080808;
+
+            color: white;
+
+            overflow-x: hidden;
+        }
+
+
+        :root {
+            --purple: #7c3cff;
+            --purple-light: #a77bff;
+            --purple-dark: #24104d;
+        }
+
+
+        /* =========================================
+           GLOBAL PURPLE GLOW
+        ========================================= */
+
+        body::before {
+
+            content: "";
+
+            position: fixed;
+
+            width: 650px;
+            height: 650px;
+
+            left: 50%;
+            top: 15%;
+
+            transform:
+                translate(-50%, -50%);
+
+            border-radius: 50%;
+
+            background:
+                radial-gradient(
+                    circle,
+                    rgba(124,60,255,.16) 0%,
+                    rgba(124,60,255,.06) 35%,
+                    transparent 70%
+                );
+
+            filter: blur(30px);
+
+            pointer-events: none;
+
+            z-index: -1;
+
+            animation:
+                backgroundGlow
+                8s
+                ease-in-out
+                infinite
+                alternate;
+        }
+
+
+        @keyframes backgroundGlow {
+
+            0% {
+                transform:
+                    translate(-55%, -45%)
+                    scale(.8);
+
+                opacity: .5;
+            }
+
+            50% {
+                transform:
+                    translate(-45%, -55%)
+                    scale(1.15);
+
+                opacity: 1;
+            }
+
+            100% {
+                transform:
+                    translate(-50%, -40%)
+                    scale(.9);
+
+                opacity: .65;
+            }
+        }
+
+
+        /* =========================================
+           LOADING SCREEN
+        ========================================= */
+
+        #loader {
+
+            position: fixed;
+
+            inset: 0;
+
+            width: 100%;
+            height: 100vh;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            flex-direction: column;
+
+            background:
+                radial-gradient(
+                    circle at center,
+                    #24104d 0%,
+                    #120820 35%,
+                    #080808 70%
+                );
+
+            z-index: 99999;
+
+            opacity: 1;
+
+            visibility: visible;
+
+            transition:
+                opacity 1.2s ease,
+                visibility 1.2s ease;
+        }
+
+
+        #loader.hide {
+
+            opacity: 0;
+
+            visibility: hidden;
+        }
+
+
+        .loader-content {
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            flex-direction: column;
+
+            animation:
+                loaderAppear
+                1s
+                ease
+                forwards;
+        }
+
+
+        @keyframes loaderAppear {
+
+            from {
+                opacity: 0;
+
+                transform:
+                    translateY(20px)
+                    scale(.92);
+            }
+
+            to {
+                opacity: 1;
+
+                transform:
+                    translateY(0)
+                    scale(1);
+            }
+        }
+
+
+        .loader-logo {
+
+            width: 190px;
+
+            max-width: 70vw;
+
+            height: auto;
+
+            margin-bottom: 28px;
+
+            filter:
+                drop-shadow(
+                    0 0 12px
+                    rgba(124,60,255,.35)
+                );
+
+            animation:
+                loaderLogoGlow
+                2.5s
+                ease-in-out
+                infinite;
+        }
+
+
+        @keyframes loaderLogoGlow {
+
+            0%,
+            100% {
+
+                transform:
+                    scale(1);
+
+                filter:
+                    drop-shadow(
+                        0 0 10px
+                        rgba(124,60,255,.25)
+                    );
+            }
+
+            50% {
+
+                transform:
+                    scale(1.04);
+
+                filter:
+                    drop-shadow(
+                        0 0 30px
+                        rgba(124,60,255,.75)
+                    );
+            }
+        }
+
+
+        .loader-text {
+
+            color: #aaa;
+
+            font-size: 12px;
+
+            letter-spacing: 5px;
+
+            font-weight: bold;
+
+            margin-bottom: 15px;
+
+            animation:
+                textGlow
+                2s
+                ease-in-out
+                infinite;
+        }
+
+
+        @keyframes textGlow {
+
+            0%,
+            100% {
+                opacity: .65;
+            }
+
+            50% {
+                opacity: 1;
+            }
+        }
+
+
+        .loader-bar {
+
+            width: 210px;
+
+            height: 3px;
+
+            border-radius: 20px;
+
+            background: #222;
+
+            overflow: hidden;
+
+            box-shadow:
+                0 0 10px
+                rgba(124,60,255,.1);
+        }
+
+
+        .loader-progress {
+
+            width: 0%;
+
+            height: 100%;
+
+            border-radius: 20px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #5c20d4,
+                    #7c3cff,
+                    #a77bff,
+                    #7c3cff
+                );
+
+            background-size: 200% 100%;
+
+            box-shadow:
+                0 0 15px
+                rgba(124,60,255,.8);
+
+            animation:
+                loadingProgress
+                2.4s
+                cubic-bezier(.4,0,.2,1)
+                forwards,
+
+                barGlow
+                1.5s
+                linear
+                infinite;
+        }
+
+
+        @keyframes loadingProgress {
+
+            0% {
+                width: 0%;
+            }
+
+            25% {
+                width: 25%;
+            }
+
+            55% {
+                width: 58%;
+            }
+
+            80% {
+                width: 82%;
+            }
+
+            100% {
+                width: 100%;
+            }
+        }
+
+
+        @keyframes barGlow {
+
+            from {
+                background-position: 0% 50%;
+            }
+
+            to {
+                background-position: 200% 50%;
+            }
+        }
+
+
+        /* =========================================
+           WEBSITE FADE IN
+        ========================================= */
+
+        #website {
+
+            opacity: 0;
+
+            transform:
+                translateY(15px);
+
+            transition:
+                opacity 1.3s ease,
+                transform 1.3s ease;
+        }
+
+
+        #website.loaded {
+
+            opacity: 1;
+
+            transform:
+                translateY(0);
+        }
+
+
+        /* =========================================
+           NAVBAR
+        ========================================= */
+
+        nav {
+
+            position: fixed;
+
+            top: 0;
+            left: 0;
+
+            width: 100%;
+
+            height: 75px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            padding: 0 7%;
+
+            background:
+                rgba(8,8,8,.85);
+
+            backdrop-filter:
+                blur(12px);
+
+            border-bottom:
+                1px solid #222;
+
+            z-index: 1000;
+
+            transition: .3s;
+        }
+
+
+        nav:hover {
+
+            border-bottom-color:
+                rgba(124,60,255,.4);
+
+            box-shadow:
+                0 5px 30px
+                rgba(124,60,255,.08);
+        }
+
+
+        /* =========================================
+           LOGO
+        ========================================= */
+
+        .logo {
+
+            display: flex;
+
+            align-items: center;
+        }
+
+
+        .logo img {
+
+            width: 150px;
+
+            height: auto;
+
+            display: block;
+
+            transition: .35s;
+
+            filter:
+                drop-shadow(
+                    0 0 8px
+                    rgba(124,60,255,.25)
+                );
+
+            animation:
+                logoGlow
+                4s
+                ease-in-out
+                infinite;
+        }
+
+
+        .logo img:hover {
+
+            transform:
+                scale(1.07);
+
+            filter:
+                drop-shadow(
+                    0 0 20px
+                    rgba(124,60,255,.8)
+                );
+        }
+
+
+        @keyframes logoGlow {
+
+            0%,
+            100% {
+
+                filter:
+                    drop-shadow(
+                        0 0 7px
+                        rgba(124,60,255,.2)
+                    );
+            }
+
+            50% {
+
+                filter:
+                    drop-shadow(
+                        0 0 17px
+                        rgba(124,60,255,.6)
+                    );
+            }
+        }
+
+
+        /* =========================================
+           NAV LINKS
+        ========================================= */
+
+        nav ul {
+
+            display: flex;
+
+            gap: 35px;
+
+            list-style: none;
+        }
+
+
+        nav a {
+
+            position: relative;
+
+            color: #ddd;
+
+            text-decoration: none;
+
+            font-size: 15px;
+
+            transition: .3s;
+        }
+
+
+        nav a::after {
+
+            content: "";
+
+            position: absolute;
+
+            left: 50%;
+
+            bottom: -8px;
+
+            width: 0;
+
+            height: 2px;
+
+            background:
+                var(--purple);
+
+            box-shadow:
+                0 0 10px
+                var(--purple);
+
+            transform:
+                translateX(-50%);
+
+            transition:
+                width .3s ease;
+        }
+
+
+        nav a:hover {
+
+            color: white;
+        }
+
+
+        nav a:hover::after {
+
+            width: 100%;
+        }
+
+
+        /* =========================================
+           HERO
+        ========================================= */
+
+        .hero {
+
+            min-height: 100vh;
+
+            display: flex;
+
+            flex-direction: column;
+
+            justify-content: center;
+
+            align-items: center;
+
+            text-align: center;
+
+            padding:
+                120px 20px 80px;
+
+            position: relative;
+
+            overflow: hidden;
+
+            background:
+                radial-gradient(
+                    circle at center,
+                    #24104d 0%,
+                    #120822 25%,
+                    #080808 60%
+                );
+        }
+
+
+        .hero::before {
+
+            content: "";
+
+            position: absolute;
+
+            width: 550px;
+            height: 550px;
+
+            border-radius: 50%;
+
+            background:
+                radial-gradient(
+                    circle,
+                    rgba(124,60,255,.2),
+                    transparent 70%
+                );
+
+            filter: blur(35px);
+
+            pointer-events: none;
+
+            animation:
+                heroGlow
+                6s
+                ease-in-out
+                infinite;
+        }
+
+
+        @keyframes heroGlow {
+
+            0% {
+
+                transform:
+                    scale(.75);
+
+                opacity: .35;
+            }
+
+            50% {
+
+                transform:
+                    scale(1.2);
+
+                opacity: 1;
+            }
+
+            100% {
+
+                transform:
+                    scale(.75);
+
+                opacity: .35;
+            }
+        }
+
+
+        .hero > * {
+
+            position: relative;
+
+            z-index: 2;
+        }
+
+
+        .hero small {
+
+            color:
+                var(--purple-light);
+
+            font-size: 15px;
+
+            letter-spacing: 4px;
+
+            font-weight: bold;
+
+            margin-bottom: 20px;
+
+            animation:
+                fadeDown
+                1s
+                ease
+                both;
+        }
+
+
+        .hero h1 {
+
+            font-size:
+                clamp(
+                    60px,
+                    12vw,
+                    140px
+                );
+
+            font-weight: 1000;
+
+            letter-spacing: -5px;
+
+            animation:
+                heroTitle
+                1s
+                ease
+                both;
+        }
+
+
+        @keyframes heroTitle {
+
+            from {
+
+                opacity: 0;
+
+                transform:
+                    translateY(30px)
+                    scale(.94);
+            }
+
+            to {
+
+                opacity: 1;
+
+                transform:
+                    translateY(0)
+                    scale(1);
+            }
+        }
+
+
+        .hero h1 span {
+
+            color:
+                var(--purple);
+
+            text-shadow:
+                0 0 10px
+                rgba(124,60,255,.3);
+
+            animation:
+                purpleTextGlow
+                3s
+                ease-in-out
+                infinite;
+        }
+
+
+        @keyframes purpleTextGlow {
+
+            0%,
+            100% {
+
+                text-shadow:
+                    0 0 8px
+                    rgba(124,60,255,.25);
+            }
+
+            50% {
+
+                text-shadow:
+                    0 0 15px
+                    rgba(124,60,255,.8),
+
+                    0 0 40px
+                    rgba(124,60,255,.4),
+
+                    0 0 70px
+                    rgba(124,60,255,.2);
+            }
+        }
+
+
+        .hero p {
+
+            max-width: 650px;
+
+            margin-top: 25px;
+
+            color: #aaa;
+
+            font-size: 20px;
+
+            line-height: 1.6;
+
+            animation:
+                fadeUp
+                1s
+                .2s
+                ease
+                both;
+        }
+
+
+        /* =========================================
+           BUTTONS
+        ========================================= */
+
+        .buttons {
+
+            display: flex;
+
+            gap: 15px;
+
+            margin-top: 40px;
+
+            animation:
+                fadeUp
+                1s
+                .4s
+                ease
+                both;
+        }
+
+
+        .button {
+
+            position: relative;
+
+            display: inline-block;
+
+            padding:
+                16px 30px;
+
+            border-radius: 8px;
+
+            text-decoration: none;
+
+            font-weight: bold;
+
+            transition: .25s;
+
+            overflow: hidden;
+        }
+
+
+        .primary {
+
+            color: white;
+
+            background:
+                linear-gradient(
+                    120deg,
+                    #6b2ff5,
+                    #8b4dff,
+                    #6b2ff5
+                );
+
+            background-size:
+                200% 100%;
+
+            box-shadow:
+                0 0 15px
+                rgba(124,60,255,.25);
+
+            animation:
+                buttonPurple
+                4s
+                linear
+                infinite;
+        }
+
+
+        @keyframes buttonPurple {
+
+            0% {
+                background-position:
+                    0% 50%;
+            }
+
+            100% {
+                background-position:
+                    200% 50%;
+            }
+        }
+
+
+        .primary::before {
+
+            content: "";
+
+            position: absolute;
+
+            top: -50%;
+
+            left: -100%;
+
+            width: 45%;
+
+            height: 200%;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    transparent,
+                    rgba(255,255,255,.28),
+                    transparent
+                );
+
+            transform:
+                skewX(-20deg);
+
+            pointer-events: none;
+
+            animation:
+                buttonShine
+                4s
+                ease-in-out
+                infinite;
+        }
+
+
+        @keyframes buttonShine {
+
+            0% {
+                left: -100%;
+            }
+
+            45%,
+            100% {
+                left: 150%;
+            }
+        }
+
+
+        .primary:hover {
+
+            transform:
+                translateY(-4px)
+                scale(1.03);
+
+            box-shadow:
+                0 0 20px
+                rgba(124,60,255,.6),
+
+                0 0 50px
+                rgba(124,60,255,.2);
+        }
+
+
+        .secondary {
+
+            border:
+                1px solid #444;
+
+            color: white;
+
+            background: #111;
+        }
+
+
+        .secondary:hover {
+
+            background: #1c1c1c;
+
+            border-color:
+                var(--purple);
+
+            transform:
+                translateY(-4px);
+
+            box-shadow:
+                0 0 20px
+                rgba(124,60,255,.25);
+        }
+
+
+        /* =========================================
+           GENERAL SECTIONS
+        ========================================= */
+
+        section {
+
+            padding:
+                120px 8%;
+        }
+
+
+        .section-title {
+
+            text-align: center;
+
+            margin-bottom: 60px;
+        }
+
+
+        .section-title small {
+
+            color:
+                var(--purple-light);
+
+            font-weight: bold;
+
+            letter-spacing: 3px;
+        }
+
+
+        .section-title h2 {
+
+            font-size: 48px;
+
+            margin-top: 12px;
+        }
+
+
+        .section-title p {
+
+            color: #888;
+
+            max-width: 600px;
+
+            margin:
+                15px auto;
+
+            line-height: 1.6;
+        }
+
+
+        /* =========================================
+           ABOUT
+        ========================================= */
+
+        .about {
+
+            background: #0d0d0d;
+
+            position: relative;
+        }
+
+
+        .about::before {
+
+            content: "";
+
+            position: absolute;
+
+            left: 0;
+            right: 0;
+
+            top: 0;
+
+            height: 1px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    transparent,
+                    var(--purple),
+                    transparent
+                );
+
+            box-shadow:
+                0 0 15px
+                var(--purple);
+        }
+
+
+        .about-content {
+
+            max-width: 900px;
+
+            margin: auto;
+
+            text-align: center;
+        }
+
+
+        .about-content p {
+
+            color: #aaa;
+
+            font-size: 19px;
+
+            line-height: 1.9;
+        }
+
+
+        /* =========================================
+           GAMES
+        ========================================= */
+
+        .games {
+
+            background: #080808;
+        }
+
+
+        .game-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    auto-fit,
+                    minmax(280px,1fr)
+                );
+
+            gap: 25px;
+
+            max-width: 1100px;
+
+            margin: auto;
+        }
+
+
+        .game-card {
+
+            min-height: 300px;
+
+            display: flex;
+
+            flex-direction: column;
+
+            justify-content: flex-end;
+
+            padding: 30px;
+
+            border:
+                1px solid #242424;
+
+            border-radius: 15px;
+
+            background:
+                linear-gradient(
+                    to top,
+                    #111 10%,
+                    rgba(17,17,17,.5),
+                    #181818
+                );
+
+            transition: .3s;
+
+            position: relative;
+
+            overflow: hidden;
+        }
+
+
+        .game-card::before {
+
+            content: "";
+
+            position: absolute;
+
+            width: 250px;
+            height: 250px;
+
+            right: -120px;
+            top: -120px;
+
+            border-radius: 50%;
+
+            background:
+                radial-gradient(
+                    circle,
+                    rgba(124,60,255,.22),
+                    transparent 70%
+                );
+
+            transition: .6s;
+
+            animation:
+                cardGlow
+                5s
+                ease-in-out
+                infinite
+                alternate;
+        }
+
+
+        @keyframes cardGlow {
+
+            from {
+
+                transform:
+                    scale(.8);
+
+                opacity: .5;
+            }
+
+            to {
+
+                transform:
+                    scale(1.2);
+
+                opacity: 1;
+            }
+        }
+
+
+        .game-card:hover {
+
+            transform:
+                translateY(-8px);
+
+            border-color:
+                #7c3cff;
+
+            box-shadow:
+                0 15px 40px
+                rgba(124,60,255,.15);
+        }
+
+
+        .game-card:hover::before {
+
+            transform:
+                scale(1.6);
+        }
+
+
+        .game-card .status {
+
+            color:
+                #9b70ff;
+
+            font-size: 12px;
+
+            font-weight: bold;
+
+            letter-spacing: 2px;
+
+            margin-bottom: 10px;
+
+            position: relative;
+        }
+
+
+        .game-card h3 {
+
+            font-size: 28px;
+
+            margin-bottom: 10px;
+
+            position: relative;
+        }
+
+
+        .game-card p {
+
+            color: #888;
+
+            line-height: 1.5;
+
+            position: relative;
+        }
+
+
+        .game-card .button {
+
+            width: fit-content;
+
+            margin-top: 18px;
+
+            position: relative;
+        }
+
+
+        /* =========================================
+           FEATURES
+        ========================================= */
+
+        .features {
+
+            background: #0d0d0d;
+        }
+
+
+        .feature-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    auto-fit,
+                    minmax(220px,1fr)
+                );
+
+            gap: 20px;
+
+            max-width: 1100px;
+
+            margin: auto;
+        }
+
+
+        .feature {
+
+            padding: 35px;
+
+            background: #111;
+
+            border:
+                1px solid #222;
+
+            border-radius: 12px;
+
+            transition: .35s;
+
+            position: relative;
+
+            overflow: hidden;
+        }
+
+
+        .feature::before {
+
+            content: "";
+
+            position: absolute;
+
+            width: 120px;
+            height: 120px;
+
+            top: -80px;
+            right: -60px;
+
+            border-radius: 50%;
+
+            background:
+                radial-gradient(
+                    circle,
+                    rgba(124,60,255,.18),
+                    transparent 70%
+                );
+
+            transition: .5s;
+        }
+
+
+        .feature:hover {
+
+            transform:
+                translateY(-7px);
+
+            border-color:
+                #7c3cff;
+
+            box-shadow:
+                0 10px 30px
+                rgba(124,60,255,.12);
+        }
+
+
+        .feature:hover::before {
+
+            transform:
+                scale(1.8);
+        }
+
+
+        .feature-icon {
+
+            font-size: 35px;
+
+            margin-bottom: 20px;
+
+            position: relative;
+
+            animation:
+                iconFloat
+                3s
+                ease-in-out
+                infinite;
+        }
+
+
+        @keyframes iconFloat {
+
+            0%,
+            100% {
+                transform:
+                    translateY(0);
+            }
+
+            50% {
+                transform:
+                    translateY(-5px);
+            }
+        }
+
+
+        .feature h3 {
+
+            margin-bottom: 12px;
+
+            position: relative;
+        }
+
+
+        .feature p {
+
+            color: #888;
+
+            line-height: 1.6;
+
+            position: relative;
+        }
+
+
+        /* =========================================
+           COMMUNITY
+        ========================================= */
+
+        .community {
+
+            text-align: center;
+
+            background:
+                radial-gradient(
+                    circle at center,
+                    #24104d,
+                    #080808 60%
+                );
+
+            position: relative;
+
+            overflow: hidden;
+
+            padding:
+                120px 20px;
+        }
+
+
+        .community::before {
+
+            content: "";
+
+            position: absolute;
+
+            width: 500px;
+            height: 500px;
+
+            left: 50%;
+            top: 50%;
+
+            transform:
+                translate(-50%, -50%);
+
+            border-radius: 50%;
+
+            background:
+                radial-gradient(
+                    circle,
+                    rgba(124,60,255,.16),
+                    transparent 70%
+                );
+
+            filter: blur(30px);
+
+            pointer-events: none;
+
+            animation:
+                communityGlow
+                5s
+                ease-in-out
+                infinite
+                alternate;
+        }
+
+
+        @keyframes communityGlow {
+
+            0% {
+
+                transform:
+                    translate(-50%, -50%)
+                    scale(.75);
+
+                opacity: .5;
+            }
+
+            100% {
+
+                transform:
+                    translate(-50%, -50%)
+                    scale(1.2);
+
+                opacity: 1;
+            }
+        }
+
+
+        /*
+            IMPORTANT:
+            Keep all community content
+            above the animated background.
+        */
+
+        .community h2,
+        .community p,
+        .community .button {
+
+            position: relative;
+
+            z-index: 5;
+        }
+
+
+        .community h2 {
+
+            font-size: 55px;
+
+            margin-bottom: 25px;
+
+            line-height: 1.1;
+
+            animation:
+                purpleTextGlow
+                3s
+                ease-in-out
+                infinite;
+        }
+
+
+        .community p {
+
+            color: #aaa;
+
+            max-width: 650px;
+
+            margin:
+                0 auto;
+
+            line-height: 1.7;
+
+            font-size: 18px;
+        }
+
+
+        /* =========================================
+           COMMUNITY DISCORD BUTTON
+        ========================================= */
+
+        .community .button {
+
+            display: inline-block;
+
+            margin-top: 35px;
+
+            position: relative;
+
+            overflow: hidden;
+
+            isolation: isolate;
+        }
+
+
+        .community .button::before {
+
+            content: "";
+
+            position: absolute;
+
+            top: -50%;
+
+            left: -100%;
+
+            width: 45%;
+
+            height: 200%;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    transparent,
+                    rgba(255,255,255,.35),
+                    transparent
+                );
+
+            transform:
+                skewX(-20deg);
+
+            pointer-events: none;
+
+            z-index: -1;
+
+            animation:
+                discordShine
+                4s
+                ease-in-out
+                infinite;
+        }
+
+
+        @keyframes discordShine {
+
+            0% {
+                left: -100%;
+            }
+
+            45% {
+                left: 150%;
+            }
+
+            100% {
+                left: 150%;
+            }
+        }
+
+
+        .community .primary {
+
+            background:
+                linear-gradient(
+                    120deg,
+                    #6b2ff5,
+                    #8b4dff,
+                    #6b2ff5
+                );
+
+            background-size:
+                200% 100%;
+
+            color: white;
+
+            border: none;
+
+            box-shadow:
+                0 0 15px
+                rgba(124,60,255,.25);
+
+            animation:
+                buttonPurple
+                4s
+                linear
+                infinite;
+
+            transition:
+                transform .25s ease,
+                box-shadow .25s ease;
+        }
+
+
+        .community .primary:hover {
+
+            transform:
+                translateY(-4px)
+                scale(1.03);
+
+            box-shadow:
+                0 0 25px
+                rgba(124,60,255,.65),
+
+                0 0 55px
+                rgba(124,60,255,.25);
+        }
+
+
+        /* =========================================
+           FOOTER
+        ========================================= */
+
+        footer {
+
+            padding:
+                40px 8%;
+
+            text-align: center;
+
+            border-top:
+                1px solid #222;
+
+            background: #050505;
+        }
+
+
+        footer h3 {
+
+            margin-bottom: 10px;
+
+            animation:
+                purpleTextGlow
+                3s
+                ease-in-out
+                infinite;
+        }
+
+
+        footer p {
+
+            color: #666;
+
+            font-size: 14px;
+        }
+
+
+        /* =========================================
+           SCROLLBAR
+        ========================================= */
+
+        ::-webkit-scrollbar {
+
+            width: 8px;
+        }
+
+
+        ::-webkit-scrollbar-track {
+
+            background: #080808;
+        }
+
+
+        ::-webkit-scrollbar-thumb {
+
+            background:
+                linear-gradient(
+                    #32186d,
+                    #7c3cff
+                );
+
+            border-radius: 10px;
+
+            box-shadow:
+                0 0 10px
+                rgba(124,60,255,.5);
+        }
+
+
+        ::-webkit-scrollbar-thumb:hover {
+
+            background:
+                var(--purple);
+        }
+
+
+        /* =========================================
+           BASIC ANIMATIONS
+        ========================================= */
+
+        @keyframes fadeUp {
+
+            from {
+
+                opacity: 0;
+
+                transform:
+                    translateY(25px);
+            }
+
+            to {
+
+                opacity: 1;
+
+                transform:
+                    translateY(0);
+            }
+        }
+
+
+        @keyframes fadeDown {
+
+            from {
+
+                opacity: 0;
+
+                transform:
+                    translateY(-20px);
+            }
+
+            to {
+
+                opacity: 1;
+
+                transform:
+                    translateY(0);
+            }
+        }
+
+
+        /* =========================================
+           MOBILE
+        ========================================= */
+
+        @media (max-width: 700px) {
+
+            nav {
+
+                padding:
+                    0 20px;
+            }
+
+
+            nav ul {
+
+                display: none;
+            }
+
+
+            .logo img {
+
+                width: 125px;
+            }
+
+
+            .hero h1 {
+
+                letter-spacing:
+                    -3px;
+            }
+
+
+            .hero p {
+
+                font-size: 17px;
+            }
+
+
+            .buttons {
+
+                flex-direction: column;
+
+                width: 100%;
+
+                max-width: 280px;
+            }
+
+
+            .button {
+
+                text-align: center;
+            }
+
+
+            section {
+
+                padding:
+                    80px 20px;
+            }
+
+
+            .section-title h2 {
+
+                font-size: 38px;
+            }
+
+
+            .community {
+
+                padding:
+                    90px 20px;
+            }
+
+
+            .community h2 {
+
+                font-size: 40px;
+            }
+
+
+            .community p {
+
+                font-size: 16px;
+            }
+
+
+            .community .button {
+
+                width: auto;
+
+                max-width: 100%;
+            }
+        }
+
+
+        /* =========================================
+           REDUCE MOTION
+        ========================================= */
+
+        @media (prefers-reduced-motion: reduce) {
+
+            *,
+            *::before,
+            *::after {
+
+                animation-duration:
+                    .01ms !important;
+
+                animation-iteration-count:
+                    1 !important;
+
+                scroll-behavior:
+                    auto !important;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- =========================================
+         LOADING SCREEN
+    ========================================= -->
+
+    <div id="loader">
+
+        <div class="loader-content">
+
+            <img
+                class="loader-logo"
+                src="file:///C:/Users/janja/Downloads/megataun%20website%20logo.webp"
+                alt="Megataun Logo"
+            >
+
+            <div class="loader-text">
+                MEGATAUN
+            </div>
+
+            <div class="loader-bar">
+
+                <div
+                    class="loader-progress"
+                ></div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================================
+         WEBSITE
+    ========================================= -->
+
+    <div id="website">
+
+
+        <!-- =========================================
+             NAVIGATION
+        ========================================= -->
+
+        <nav>
+
+            <div class="logo">
+
+                <img
+                    src="file:///C:/Users/janja/Downloads/megataun%20website%20logo.webp"
+                    alt="Megataun Logo"
+                >
+
+            </div>
+
+
+            <ul>
+
+                <li>
+                    <a href="#home">
+                        Home
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#about">
+                        About
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#games">
+                        Games
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#community">
+                        Community
+                    </a>
+                </li>
+
+            </ul>
+
+        </nav>
+
+
+        <!-- =========================================
+             HERO
+        ========================================= -->
+
+        <section
+            class="hero"
+            id="home"
+        >
+
+            <small>
+                ROBLOX GAME STUDIO
+            </small>
+
+
+            <h1>
+                MEGA<span>TAUN</span>
+            </h1>
+
+
+            <p>
+
+                We create unique Roblox experiences designed
+                to bring players together, spark creativity,
+                and create unforgettable moments.
+
+            </p>
+
+
+            <div class="buttons">
+
+
+                <a
+                    class="button primary"
+                    href="https://www.roblox.com/communities/477815727/Megataun#!/about"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+
+                    PLAY OUR GAMES
+
+                </a>
+
+
+                <a
+                    class="button secondary"
+                    href="https://discord.gg/tXG7sKgkD"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+
+                    JOIN DISCORD
+
+                </a>
+
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================================
+             ABOUT
+        ========================================= -->
+
+        <section
+            class="about"
+            id="about"
+        >
+
+
+            <div class="section-title">
+
+                <small>
+                    WHO WE ARE
+                </small>
+
+
+                <h2>
+                    Built Different.
+                </h2>
+
+
+                <p>
+
+                    More than just a game studio.
+                    We're building worlds.
+
+                </p>
+
+            </div>
+
+
+            <div class="about-content">
+
+                <p>
+
+                    Megataun is a Roblox game studio focused on
+                    creating exciting, memorable, and unique
+                    experiences for players around the world.
+                    From gameplay and environments to animations
+                    and special events, we put creativity into
+                    everything we build.
+
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================================
+             GAMES
+        ========================================= -->
+
+        <section
+            class="games"
+            id="games"
+        >
+
+
+            <div class="section-title">
+
+                <small>
+                    OUR EXPERIENCES
+                </small>
+
+
+                <h2>
+                    Our Games
+                </h2>
+
+
+                <p>
+
+                    Discover the worlds created by Megataun.
+
+                </p>
+
+            </div>
+
+
+            <div class="game-grid">
+
+
+                <!-- FISHLAND -->
+
+                <div class="game-card">
+
+                    <div class="status">
+                        AVAILABLE NOW
+                    </div>
+
+
+                    <h3>
+                        FISHLAND
+                    </h3>
+
+
+                    <p>
+
+                        Cast your rod, catch rare fish,
+                        explore the world, and become
+                        the ultimate fisherman.
+
+                    </p>
+
+
+                    <a
+                        class="button primary"
+                        href="https://www.roblox.com/games/137631745204464/FishLand"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+
+                        PLAY
+
+                    </a>
+
+                </div>
+
+
+                <!-- GAME 2 -->
+
+                <div class="game-card">
+
+                    <div class="status">
+                        COMING SOON
+                    </div>
+
+
+                    <h3>
+                        ???
+                    </h3>
+
+
+                    <p>
+
+                        Something new is being created
+                        behind the scenes.
+
+                    </p>
+
+                </div>
+
+
+                <!-- GAME 3 -->
+
+                <div class="game-card">
+
+                    <div class="status">
+                        IN DEVELOPMENT
+                    </div>
+
+
+                    <h3>
+                        ???
+                    </h3>
+
+
+                    <p>
+
+                        Stay tuned for our next
+                        Roblox experience.
+
+                    </p>
+
+                </div>
+
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================================
+             FEATURES
+        ========================================= -->
+
+        <section
+            class="features"
+        >
+
+
+            <div class="section-title">
+
+                <small>
+                    WHAT WE CREATE
+                </small>
+
+
+                <h2>
+                    Made For Players
+                </h2>
+
+            </div>
+
+
+            <div class="feature-grid">
+
+
+                <div class="feature">
+
+                    <div class="feature-icon">
+                        🎮
+                    </div>
+
+
+                    <h3>
+                        Fun Gameplay
+                    </h3>
+
+
+                    <p>
+
+                        Gameplay designed to keep
+                        you coming back.
+
+                    </p>
+
+                </div>
+
+
+                <div class="feature">
+
+                    <div class="feature-icon">
+                        🌎
+                    </div>
+
+
+                    <h3>
+                        Unique Worlds
+                    </h3>
+
+
+                    <p>
+
+                        Explore original worlds
+                        filled with details.
+
+                    </p>
+
+                </div>
+
+
+                <div class="feature">
+
+                    <div class="feature-icon">
+                        ⚡
+                    </div>
+
+
+                    <h3>
+                        Regular Updates
+                    </h3>
+
+
+                    <p>
+
+                        We're always working on
+                        something new.
+
+                    </p>
+
+                </div>
+
+
+                <div class="feature">
+
+                    <div class="feature-icon">
+                        👥
+                    </div>
+
+
+                    <h3>
+                        Community
+                    </h3>
+
+
+                    <p>
+
+                        Players are at the heart
+                        of everything we do.
+
+                    </p>
+
+                </div>
+
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================================
+             COMMUNITY
+        ========================================= -->
+
+        <section
+            class="community"
+            id="community"
+        >
+
+
+            <h2>
+                Join Megataun.
+            </h2>
+
+
+            <p>
+
+                Become part of our community.
+                Get updates, announcements, sneak peeks,
+                and meet other players.
+
+            </p>
+
+
+            <a
+                class="button primary"
+                href="https://discord.gg/tXG7sKgkD"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+
+                JOIN OUR DISCORD
+
+            </a>
+
+
+        </section>
+
+
+        <!-- =========================================
+             FOOTER
+        ========================================= -->
+
+        <footer>
+
+
+            <h3>
+                MEGATAUN
+            </h3>
+
+
+            <p>
+
+                © 2026 Megataun.
+                All rights reserved.
+
+            </p>
+
+
+            <br>
+
+
+            <p>
+
+                A Roblox game studio creating experiences
+                for players around the world.
+
+            </p>
+
+
+            <br>
+
+
+            <p>
+                megataun.com
+            </p>
+
+
+        </footer>
+
+
+    </div>
+
+
+    <!-- =========================================
+         LOADING JAVASCRIPT
+    ========================================= -->
+
+    <script>
+
+        /*
+            Keep the page locked while
+            the loading screen is visible.
+        */
+
+        document.body.style.overflow = "hidden";
+
+
+        window.addEventListener(
+            "load",
+            function () {
+
+
+                const loader =
+                    document.getElementById(
+                        "loader"
+                    );
+
+
+                const website =
+                    document.getElementById(
+                        "website"
+                    );
+
+
+                /*
+                    Start the website fade-in.
+                */
+
+                setTimeout(
+                    function () {
+
+                        website.classList.add(
+                            "loaded"
+                        );
+
+                    },
+                    350
+                );
+
+
+                /*
+                    Remove the loading screen.
+                */
+
+                setTimeout(
+                    function () {
+
+                        loader.classList.add(
+                            "hide"
+                        );
+
+
+                        document.body.style.overflow =
+                            "auto";
+
+                    },
+                    2500
+                );
+
+            }
+        );
+
+    </script>
+
+
+</body>
+
+</html>
